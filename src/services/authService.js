@@ -31,8 +31,18 @@ const login = async (req, res) => {
     if (!validPass)
       return res.status(400).json({ error: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user.id }, JWT_SECRET);
-    res.header("Authorization", token).json({ token });
+    // Generate JWT
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });
+
+    // Set cookie with the token
+    res.cookie("token", token, {
+      httpOnly: true, // Prevent access from JavaScript
+      secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+      sameSite: "strict", // CSRF protection
+      maxAge: 3600000, // 1 hour
+    });
+
+    res.json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
   }

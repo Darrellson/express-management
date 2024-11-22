@@ -1,5 +1,5 @@
 const express = require('express');
-const { createPost, getUserPosts, getPostById } = require('../controllers/postController');
+const { createPost, getUserPosts, getPostById } = require('../services/postService');
 const authenticateToken = require('../auth/authenticateToken');
 
 const router = express.Router();
